@@ -1,0 +1,55 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <title>Formulario de Contacto</title>
+</head>
+
+<body>
+
+    <div id="newUsr">
+    
+        <form name="FormNwUs" id="FormNwUs" method="post" action="http://localhost:2000/client">
+        
+            <fieldset>
+
+            
+                <div><label>Nombre:</label><input type="text" class="nombre" value="nombre" name="username" /></div>
+            
+                <div><label>Email:</label><input type="text" class="email" name="email" /></div>
+            
+                <div><label>Password:</label><input type="text" class="password" name="password" /></div>
+            
+                <div class="ultimo">
+                
+                    <button id="bot_e">Crear Usuarios</button>
+
+                </div>
+            </fieldset>
+
+        </form>
+    </div>
+    <!-- Crear usuarios -->
+
+
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+
+    <script>
+
+        //////Crear users Post///////////////////////////////
+        $('#bot_e').click(function() {
+            $.ajax({
+                //url : 'http://localhost:2000/client',
+                dataType: "json",
+                // data: "data"
+                url: $('#FormNwUs').attr('action'),
+                data: $('#MyForm').serializeArray()
+            })
+        });
+
+    </script>
+
+</body>
+
+</html>
