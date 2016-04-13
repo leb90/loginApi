@@ -1,8 +1,9 @@
 var UserModel = require('../models/users');
-
+var crypto = require('crypto');
 var express = require('express');
 var router = express.Router();
-
+var nodemailer = require('nodemailer');
+var passport = require('passport');
 
 router.get("/client/update/:id", function(req, res) {
     var id = req.params.id;
@@ -35,21 +36,21 @@ router.get("/list", function(req, res) {
     });
 });
 
-router.get("/create", function(req, res){
-	res.render("create.html",{ 
-		title : "Formulario para crear un nuevo recurso"
-	});
+router.get("/create", function(req, res) {
+    res.render("create.html", {
+        title: "Formulario para crear un nuevo recurso"
+    });
 });
-router.get("/edit", function(req, res){
-	res.render("edit.html",{ 
-		title : "Formulario para crear un nuevo recurso"
-	});
+router.get("/edit", function(req, res) {
+    res.render("edit.html", {
+        title: "Formulario para crear un nuevo recurso"
+    });
 });
 
-router.get("/delete", function(req, res){
-	res.render("delete.html",{ 
-		title : "Formulario para eliminar un recurso"
-	});
+router.get("/delete", function(req, res) {
+    res.render("delete.html", {
+        title: "Formulario para eliminar un recurso"
+    });
 });
 
 router.get("/client", function(req, res) {
@@ -85,25 +86,60 @@ router.get("/client/:id", function(req, res) {
 
 
 router.post("/client", function(req, res) {
+    var transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+            user: 'leam.90@gmail.com',
+            pass: '35410287talizorah'
+        }
+
+    });
+
+    var mailOptions = {
+        from: 'Leandro Bisceglie <leam.90@gmail.com>',
+        to: 'leam.90@gmail.com',
+        subject: 'Website Submission',
+        text: 'you created a new user',
+        html: '<p>new user created!...</p>'
+
+    }
+
+    transporter.sendMail(mailOptions, function(error, info) {
+        if (error) {
+            console.log(error);
+            res.redirect('/');
+        } else {
+            console.log('messege sent:' + info.response);
+            res.redirect('/');
+        }
+    });
+
     if (!req.body) {
 
         res.json(500, {
             "msg": "incorrect request"
         });
     }
+
     var userData = {
-        id: null,
-        username: req.body.username,
-        direccion: req.body.direccion,
-        telefono: req.body.telefono,
-        created_at: null,
-        updated_at: null
+
+        user: req.body.user,
+        email: req.body.email,
+        name: req.body.name,
+        birthday: req.body.birthday,
+        password: req.body.password
+
     };
+
+    var hash = crypto.createHash('md5').update(userData.password).digest('hex');
+    console.log(hash);
+
+    userData.password = hash;
 
     UserModel.insertUser(userData, function(error, data) {
 
         if (data && data.insertId) {
-            //res.json(200,{"msg":"Gato era esto"});
+
             res.redirect("/client/" + data.insertId);
         } else {
             res.json(500, {
@@ -118,12 +154,16 @@ router.put("/client/:id", function(req, res) {
 
     var userData = {
         id: req.param('id'),
-        username: req.param('username'),
-        direccion: req.param('direccion'),
-        telefono: req.param('telefono')
+        user: req.param('user'),
+        email: req.param('email'),
+        name: req.param('name'),
+        birthday: req.param('birthday'),
+        password: req.param('password')
     };
-    console.log(req.param.id)
-    
+    var hash = crypto.createHash('md5').update(userData.password).digest('hex');
+    console.log(hash);
+    userData.password = hash;
+
     UserModel.updateUser(userData, function(error, data) {
 
         if (data && data.msg) {
@@ -151,5 +191,75 @@ router.delete("/client/:id", function(req, res) {
     });
 
 });
+
+
+///////////////////////////////////////////
+
+
+
+// index
+var index = function(req, res, next) {
+    if (!req.isAuthenticated()) {
+        res.redirect('/signin');
+    } else {
+
+        var user = req.user;
+
+        if (user !== undefined) {
+            user = user.toJSON();
+        }
+        res.render('index', {
+            title: 'Home',
+            user: user
+        });
+    }
+};
+// sign in
+// GET
+router.get('/signin', function(req, res, next) {
+
+    if (req.isAuthenticated()) res.redirect('/list');
+    res.render('signin.html', {
+        title: 'Sign In'
+    });
+});
+// sign in
+// POST
+router.post('/signin', function(req, res, next) {
+    passport.authenticate('local', {
+            successRedirect: '/list',
+            failureRedirect: '/signin'
+        },
+        function(err, user, info) {
+            if (err) {
+                return res.render('signin', {
+                    title: 'Sign In',
+                    errorMessage: err.message
+                });
+            }
+
+            if (!user) {
+                return res.render('signin', {
+                    title: 'Sign In',
+                    errorMessage: info.message
+                });
+            }
+            return req.logIn(user, function(err) {
+                if (err) {
+                    return res.render('signin', {
+                        title: 'Sign In',
+                        errorMessage: err.message
+                    });
+                } else {
+                    return res.redirect('/');
+                }
+            });
+        });
+});
+// signin
+// GET
+//route.get('/signin', route.signIn);
+// POST
+//  route.post('/signin', route.signInPost);
 
 module.exports = router

@@ -29,7 +29,7 @@ var userModel = {};
 
 userModel.getUsers = function(callback) {
     if (connection) {
-        connection.query('SELECT * FROM apibd.users ORDER BY id', function(error, rows) {
+        connection.query('SELECT * FROM db1.account ORDER BY id', function(error, rows) {
             if (error) {
                 throw error;
             } else {
@@ -44,7 +44,7 @@ userModel.getUser = function(id, callback) {
     var ob = {
         id: id
     }
-    var query = "SELECT * FROM apibd.users WHERE id = :id";
+    var query = "SELECT * FROM db1.account WHERE id = :id";
     connection.query(query, ob, function(error, row) {
         if (error) {
             throw error;
@@ -57,12 +57,14 @@ userModel.insertUser = function(userData, callback) {
     console.log(userData);
     if (connection) {
         var ob = {
-            username: (userData.username),
-            direccion: (userData.direccion),
-            telefono: (userData.telefono)
+            user: (userData.user),
+            email: (userData.email),
+            name: (userData.name),
+            birthday: (userData.birthday),
+            password: (userData.password)
         };
 
-        var sql = 'INSERT INTO apibd.users SET username = :username, direccion = :direccion, telefono = :telefono';
+        var sql = 'INSERT INTO db1.account SET user = :user, email = :email, password = :password, birthday = :birthday, name = :name';
 
 
         connection.query(sql, ob, function(err, result) {
@@ -82,13 +84,15 @@ userModel.updateUser = function(userData, callback) {
 
 
         var ob = {
-            username: (userData.username),
-            direccion: (userData.direccion),
-            telefono: (userData.telefono),
+            user: (userData.user),
+            email: (userData.email),
+            name: (userData.name),
+            birthday: (userData.birthday),
+            password: (userData.password),
             id: (userData.id)
         };
 
-        var sql = "UPDATE apibd.users SET username = :username, direccion = :direccion, telefono = :telefono WHERE id = :id";
+        var sql = "UPDATE db1.account SET user = :user, email = :email, password = :password, name = :name, birthday = :birthday WHERE id = :id";
 
         connection.query(sql, ob, function(error, data) {
 
@@ -110,14 +114,14 @@ userModel.deleteUser = function(id, callback) {
         var obExists = {
             id: id
         }
-        var queryExists = "SELECT * FROM apibd.users WHERE id = :id";
+        var queryExists = "SELECT * FROM db1.account WHERE id = :id";
         connection.query(queryExists, obExists, function(err, row) {
 
             if (row) {
                 var ob = {
                     id: id
                 }
-                var query = "DELETE FROM apibd.users WHERE id = :id";
+                var query = "DELETE FROM db1.account WHERE id = :id";
                 connection.query(query, ob, function(error, result) {
                     if (error) {
                         throw error;
@@ -135,6 +139,18 @@ userModel.deleteUser = function(id, callback) {
         });
     }
 }
-
+userModel.getLogUser = function(id, callback) {
+    var ob = {
+        user: (userData.user)
+    }
+    var query = "SELECT * FROM db1.account WHERE user= :user";
+    connection.query(query, ob, function(error, row) {
+        if (error) {
+            throw error;
+        } else {
+            callback(null, row);
+        }
+    });
+}
 
 module.exports = userModel;
