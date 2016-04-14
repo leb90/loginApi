@@ -139,11 +139,13 @@ userModel.deleteUser = function(id, callback) {
         });
     }
 }
-userModel.getLogUser = function(id, callback) {
+userModel.getLogUser = function(userData, callback) {
     var ob = {
-        user: (userData.user)
+        user: (userData.user),
+        password: (userData.password)
+
     }
-    var query = "SELECT * FROM db1.account WHERE user= :user";
+    var query = "SELECT * FROM db1.account WHERE user= :user AND password= :password";
     connection.query(query, ob, function(error, row) {
         if (error) {
             throw error;

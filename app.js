@@ -8,6 +8,7 @@ var methodOverride = require('method-override');
 var app = express();
 var router = express.Router();
 var passport = require('passport');
+
 var LocalStrategy = require('passport-local').Strategy;
 
 //userModel
@@ -17,7 +18,8 @@ app.set('port', process.env.PORT || 2000);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
 app.engine('html', require('hogan-express'));
-
+app.use(passport.initialize())
+app.use(passport.session());
 app.use(function(req, res, next) {
     var oneof = false;
     if (req.headers.origin) {
@@ -65,20 +67,21 @@ if ('development' == router.get('env')) {
 }
 
 
-app.use(passport.initialize());
-app.use(passport.session());
+
 
 passport.use(new LocalStrategy({
-    usernameField: 'user',
-    passwordField: 'password'
+        usernameField: 'user',
+        passwordField: 'password'
 
-},
+    },
     function(username, password, done) {
 
         //       new Model.User({
         //           
         //       }).fetch().then(function(data) {
-        UserModel.getLogUser(userData, function(error, data) {
+        UserModel.getLogUser({
+            user: username
+        }, function(error, data) {
             if (typeof data !== 'undefined' && data.length > 0) {
                 res.json(200, data);
             } else {
@@ -86,7 +89,7 @@ passport.use(new LocalStrategy({
                     "msg": "notExist"
                 });
             }
-            username: username
+
 
             var user = data;
             if (user === null) {
@@ -95,21 +98,20 @@ passport.use(new LocalStrategy({
                 });
             } else {
                 user = data.toJSON();
-                if (!crypto.createHash('md5').update(userData.password).digest('hex')) {
+                var hash = crypto.createHash('md5').update(password).digest('hex');
+
+                if (user.password == hash) {
+                    return done(null, user);
+                } else {
                     return done(null, false, {
                         message: 'Invalid username or password'
                     });
-                } else {
-                    return done(null, user);
                 }
             }
         });
     }
 ));
 
-passport.serializeUser(function(user, done) {
-    done(null, user.username);
-});
 
 
 

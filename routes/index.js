@@ -195,9 +195,6 @@ router.delete("/client/:id", function(req, res) {
 
 ///////////////////////////////////////////
 
-
-
-// index
 var index = function(req, res, next) {
     if (!req.isAuthenticated()) {
         res.redirect('/signin');
@@ -214,6 +211,7 @@ var index = function(req, res, next) {
         });
     }
 };
+
 // sign in
 // GET
 router.get('/signin', function(req, res, next) {
@@ -226,11 +224,22 @@ router.get('/signin', function(req, res, next) {
 // sign in
 // POST
 router.post('/signin', function(req, res, next) {
+
+    var userData = {
+
+        user: req.body.user,
+        password: req.body.password
+
+    };
+    var hash = crypto.createHash('md5').update(userData.password).digest('hex');
+    console.log(hash);
+    userData.password = hash;
+    console.log(userData)
     passport.authenticate('local', {
             successRedirect: '/list',
-            failureRedirect: '/signin'
+            failureRedirect: '/'
         },
-        function(err, user, info) {
+        UserModel.getLogUser(userData, function(err, user, info) {
             if (err) {
                 return res.render('signin', {
                     title: 'Sign In',
@@ -245,6 +254,7 @@ router.post('/signin', function(req, res, next) {
                 });
             }
             return req.logIn(user, function(err) {
+                console.log(user)
                 if (err) {
                     return res.render('signin', {
                         title: 'Sign In',
@@ -254,7 +264,7 @@ router.post('/signin', function(req, res, next) {
                     return res.redirect('/');
                 }
             });
-        });
+        }));
 });
 // signin
 // GET
