@@ -69,51 +69,6 @@ if ('development' == router.get('env')) {
 
 
 
-passport.use(new LocalStrategy({
-        usernameField: 'user',
-        passwordField: 'password'
-
-    },
-    function(username, password, done) {
-
-        //       new Model.User({
-        //           
-        //       }).fetch().then(function(data) {
-        UserModel.getLogUser({
-            user: username
-        }, function(error, data) {
-            if (typeof data !== 'undefined' && data.length > 0) {
-                res.json(200, data);
-            } else {
-                res.json(404, {
-                    "msg": "notExist"
-                });
-            }
-
-
-            var user = data;
-            if (user === null) {
-                return done(null, false, {
-                    message: 'Invalid username or password'
-                });
-            } else {
-                user = data.toJSON();
-                var hash = crypto.createHash('md5').update(password).digest('hex');
-
-                if (user.password == hash) {
-                    return done(null, user);
-                } else {
-                    return done(null, false, {
-                        message: 'Invalid username or password'
-                    });
-                }
-            }
-        });
-    }
-));
-
-
-
 
 
 

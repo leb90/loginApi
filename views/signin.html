@@ -2,38 +2,52 @@
 <html lang="en">
 
 <head>
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <title>
     </title>
 </head>
 
 <body>
     <h2>Sign In Form</h2>
+    <div id=log>
+        <label for="user">user:</label>
+        <input type="text" id="user" />
+        <br>
+        <label for="password">password:</label>
+        <input type="text" id="password" />
+        <div>
+            <button id="signin">Login</button>
+        </div>
+        <a href="/signup" title="register">register</a>
+    </div>
     <script>
     if (typeof(errorMessage) !== 'undefined') {
         errorMessage
     }
-    </script>
-    <label for="user">user</label>
-    <input type="text" name="user" id="user" placeholder="user" required="true" />
-    <br>
-    <label for="password">password</label>
-    <input type="text" name="password" id="password" placeholder="password" required="true" />
-    <div><button id="signin">Login</button></div>
-    <a href="/signup" title="register">register</a>
-    <script>
+
+    var URL = "http://localhost:2000/signin"
+
     $('#signin').click(function() {
         var data = {
             user: $("#user").val(),
             password: $("#password").val()
         };
         $.ajax({
-            dataType: "json",
-            url: 'http://localhost:2000/list',
+            dataType: "html",
+            url: URL,
             data: data,
             type: "POST",
-            success: function(result) {
-                
+            success: function(data) {
+                console.log('tu mami');
+                window.location.href = 'http://localhost:2000/list';
+
+            },
+            error: function(){
+               console.log("error")
+               console.log(arguments)
             }
+
+
         })
     });
     </script>

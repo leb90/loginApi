@@ -240,6 +240,8 @@ router.post('/signin', function(req, res, next) {
             failureRedirect: '/'
         },
         UserModel.getLogUser(userData, function(err, user, info) {
+           
+
             if (err) {
                 return res.render('signin', {
                     title: 'Sign In',
@@ -266,6 +268,18 @@ router.post('/signin', function(req, res, next) {
             });
         }));
 });
+
+
+
+
+
+
+
+
+
+
+
+
 // signin
 // GET
 //route.get('/signin', route.signIn);
