@@ -131,10 +131,7 @@ router.post("/client", function(req, res) {
 
     };
 
-    var hash = crypto.createHash('md5').update(userData.password).digest('hex');
-    console.log(hash);
-
-    userData.password = hash;
+    userData.password = crypto.createHash('md5').update(userData.password).digest('hex');
 
     UserModel.insertUser(userData, function(error, data) {
 
@@ -216,6 +213,10 @@ var index = function(req, res, next) {
 // GET
 router.get('/signin', function(req, res, next) {
 
+
+
+
+
     if (req.isAuthenticated()) res.redirect('/list');
     res.render('signin.html', {
         title: 'Sign In'
@@ -229,19 +230,17 @@ router.post('/signin', function(req, res, next) {
 
         user: req.body.user,
         password: req.body.password
-
     };
+
     var hash = crypto.createHash('md5').update(userData.password).digest('hex');
-    console.log(hash);
+
     userData.password = hash;
-    console.log(userData)
+
     passport.authenticate('local', {
             successRedirect: '/list',
             failureRedirect: '/'
         },
         UserModel.getLogUser(userData, function(err, user, info) {
-           
-
             if (err) {
                 return res.render('signin', {
                     title: 'Sign In',
@@ -255,22 +254,34 @@ router.post('/signin', function(req, res, next) {
                     errorMessage: info.message
                 });
             }
-            return req.logIn(user, function(err) {
-                console.log(user)
-                if (err) {
-                    return res.render('signin', {
-                        title: 'Sign In',
-                        errorMessage: err.message
-                    });
-                } else {
-                    return res.redirect('/');
-                }
+            
+            var token = crypto.randomBytes(32).toString('hex');
+            
+            //arregla los datos que inserta
+            var tokenData = {
+                id: token,
+                account_id: user[0].id
+            }        
+            UserModel.insertToken(tokenData, function(error, data) {
+                //chequear que ande bien el logIn de passport
+                req.logIn(user, function(err) {
+                    if (err) {
+                        return res.send({
+                            title: 'Sign In',
+                            errorMessage: err.message
+                        });
+                    } else {
+                        //arregla los datos que devuelve
+                        res.send({
+                            msj: 'Sign In',
+                            token: token
+                        });
+                    }
+                });
             });
+
         }));
 });
-
-
-
 
 
 
