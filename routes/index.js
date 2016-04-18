@@ -212,11 +212,6 @@ var index = function(req, res, next) {
 // sign in
 // GET
 router.get('/signin', function(req, res, next) {
-
-
-
-
-
     if (req.isAuthenticated()) res.redirect('/list');
     res.render('signin.html', {
         title: 'Sign In'
@@ -239,6 +234,7 @@ router.post('/signin', function(req, res, next) {
     passport.authenticate('local', {
             successRedirect: '/list',
             failureRedirect: '/'
+
         },
         UserModel.getLogUser(userData, function(err, user, info) {
             if (err) {
@@ -254,38 +250,47 @@ router.post('/signin', function(req, res, next) {
                     errorMessage: info.message
                 });
             }
-            
+
+
             var token = crypto.randomBytes(32).toString('hex');
-            
+
             //arregla los datos que inserta
             var tokenData = {
                 id: token,
                 account_id: user[0].id
-            }        
-            UserModel.insertToken(tokenData, function(error, data) {
-                //chequear que ande bien el logIn de passport
-                req.logIn(user, function(err) {
-                    if (err) {
-                        return res.send({
-                            title: 'Sign In',
-                            errorMessage: err.message
-                        });
-                    } else {
-                        //arregla los datos que devuelve
-                        res.send({
-                            msj: 'Sign In',
-                            token: token
-                        });
-                    }
-                });
-            });
+            }
+            UserModel.insertToken(tokenData, function(err, data) {
 
+                if (err) {
+
+                    return res.send({
+                        title: 'Sign In',
+                        errorMessage: err.message
+                    });
+                } else {
+
+                    res.send({
+                        msj: 'Sign In',
+                        token: token
+                    });
+                }
+            });
         }));
 });
 
 
 
-
+// sign out
+// router.get('/signout', function(req, res, next) {
+//     if (!req.isAuthenticated()) {
+//         res.render('user.html', {
+//             title: 'here'
+//         });
+//     } else {
+//         req.logout();
+//         res.redirect('/signin');
+//     }
+// });
 
 
 

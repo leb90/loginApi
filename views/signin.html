@@ -3,6 +3,7 @@
 
 <head>
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="jquery.cookie.js"></script>
     <title>
     </title>
 </head>
@@ -41,7 +42,8 @@
             data: data,
             type: "POST",
             success: function(data) {
-                console.log('tu mami');
+
+                console.log(data);
                 window.location.href = 'http://localhost:2000/list';
 
             },

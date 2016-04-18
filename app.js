@@ -1,5 +1,5 @@
 var express = require('express');
-
+var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var routesIndex = require('./routes/index');
 var http = require('http');
@@ -13,7 +13,7 @@ var LocalStrategy = require('passport-local').Strategy;
 
 //userModel
 var UserModel = require('./models/users');
-
+app.use(cookieParser());
 app.set('port', process.env.PORT || 2000);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
