@@ -90,7 +90,7 @@ router.post("/client", function(req, res) {
         service: 'Gmail',
         auth: {
             user: 'leam.90@gmail.com',
-            pass: '35410287talizorah'
+            pass: ''
         }
 
     });
