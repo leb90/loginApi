@@ -2,25 +2,62 @@
 <html lang="en">
 
 <head>
-    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
+    <title>Starter Template - Materialize</title>
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <!-- CSS  -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection" />
     <script src="jquery.cookie.js"></script>
-    <title>
-    </title>
+    <script src="js/materialize.js"></script>
+    <script src="js/init.js"></script>
 </head>
 
 <body>
-    <h2>Sign In Form</h2>
-    <div id=log>
-        <label for="user">user:</label>
-        <input type="text" id="user" />
-        <br>
-        <label for="password">password:</label>
-        <input type="text" id="password" />
-        <input type="hidden" id="id" />
-        <div>
-            <button id="signin">Login</button>
+    <nav class="light-blue lighten-1" role="navigation">
+        <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Home</a>
+            <ul class="right hide-on-med-and-down">
+                <li><a href="#">Navbar Link</a></li>
+            </ul>
+            <ul id="nav-mobile" class="side-nav">
+                <li><a href="#">Navbar Link</a></li>
+            </ul>
+            <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
         </div>
-        <a href="/signup" title="register">register</a>
+    </nav>
+    <h2 class="header">Sign In Form</h2>
+    <div class="section no-pad-bot" id="index-banner">
+        <div class="container">
+            <br>
+            <br>
+            <script src="/js/hogan.js"></script>
+            <!-- include your server-side compiled templates -->
+            <script src="/js/my-templates.js"></script>
+            <!-- render your templates -->
+            <div class="row">
+                <div class="col s12">
+                    <div class="row">
+                        <div class="input-field col s6">
+                            <input placeholder="Placeholder" id="user" type="text" class="validate">
+                            <label for="first_name">Account</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s6">
+                            <input id="password" type="password" class="validate">
+                            <label for="password">Password</label>
+                        </div>
+                    </div>
+                    <div id="signin">
+                        <a class="waves-effect waves-light btn" type="submit"><i class="material-icons left">done</i>Login</a>
+                    </div>
+                    <br>
+                    <a href="/signup" class="waves-effect waves-light btn"><i class="material-icons left">play_for_work</i>Registrarse</a>
+                    <a class="waves-effect waves-teal btn-flat">Olvidó su contraseña?</a>
+                </div>
+            </div>
+        </div>
     </div>
     <script>
     if (typeof(errorMessage) !== 'undefined') {
@@ -31,31 +68,70 @@
 
     $('#signin').click(function() {
         var data = {
-            
+
             user: $("#user").val(),
             password: $("#password").val()
 
         };
+
         $.ajax({
-            dataType: "html",
+            dataType: "json",
             url: URL,
             data: data,
             type: "POST",
             success: function(data) {
-
-                console.log(data);
+                document.cookie = data.token
                 window.location.href = 'http://localhost:2000/list';
 
             },
-            error: function(){
-               console.log("error")
-               console.log(arguments)
+            error: function() {
+
+                console.log("error")
+                console.log(arguments)
             }
 
 
         })
     });
     </script>
+    <div class="container">
+        <div class="section">
+        </div>
+    </div>
+    <footer class="page-footer orange">
+        <div class="container">
+            <div class="row">
+                <div class="col l6 s12">
+                    <h5 class="white-text">Company Bio</h5>
+                    <p class="grey-text text-lighten-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sodales purus lacus. Phasellus lorem tortor, tristique consequat scelerisque ut, pharetra lobortis arcu. Vivamus vitae nisi at augue dapibus efficitur. Pellentesque imperdiet semper dolor. Donec nibh mauris, ullamcorper eget pulvinar nec.</p>
+                </div>
+                <div class="col l3 s12">
+                    <h5 class="white-text">Settings</h5>
+                    <ul>
+                        <li><a class="white-text" href="#!">Link 1</a></li>
+                        <li><a class="white-text" href="#!">Link 2</a></li>
+                        <li><a class="white-text" href="#!">Link 3</a></li>
+                        <li><a class="white-text" href="#!">Link 4</a></li>
+                    </ul>
+                </div>
+                <div class="col l3 s12">
+                    <h5 class="white-text">Connect</h5>
+                    <ul>
+                        <li><a class="white-text" href="#!">Link 1</a></li>
+                        <li><a class="white-text" href="#!">Link 2</a></li>
+                        <li><a class="white-text" href="#!">Link 3</a></li>
+                        <li><a class="white-text" href="#!">Link 4</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <div class="container">
+                Made by <a class="orange-text text-lighten-3" href="http://materializecss.com">Materialize</a>
+            </div>
+        </div>
+    </footer>
+    <!--  Scripts-->
 </body>
 
 </html>

@@ -9,6 +9,7 @@
     "ejs": "^2.4.1",
     "hogan-express": "^0.5.2",
     "hogan.js": "^3.0.2",
+    "materialize-css": "^0.97.6",
     "method-override": "^2.3.5",
     "nodemailer": "^2.3.1",
     "passport": "^0.3.2",

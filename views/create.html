@@ -9,7 +9,12 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection" />
     <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection" />
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="js/materialize.js"></script>
+    <script src="js/init.js"></script>
+
 </head>
+
 
 <body>
     <nav class="light-blue lighten-1" role="navigation">
@@ -27,11 +32,11 @@
     <!--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
     <div class="row">
         <h4 style="margin-left: 1%">Create Account</h4>
-        <form class="col s6" style="margin-bottom: 15%; margin-top: 1%">
+        <div class="col s6" style="margin-bottom: 15%; margin-top: 1%">
             <fieldset>
                 <div class="row">
                     <div class="input-field col s6">
-                        <input placeholder="Placeholder" id="account" type="text" class="validate">
+                        <input id="account" type="text" class="validate">
                         <label for="first_name">Account</label>
                     </div>
                     <div class="input-field col s6">
@@ -41,7 +46,7 @@
                 </div>
                 <div class="row">
                     <div class="input-field col s6">
-                        <input placeholder="Placeholder" id="first_name" type="text" class="validate">
+                        <input id="first_name" type="text" class="validate">
                         <label for="first_name">First Name</label>
                     </div>
                     <div class="input-field col s6">
@@ -51,7 +56,7 @@
                 </div>
                 <div class="row">
                     <div class="input-field col s6">
-                        <input type="password" class="validate tooltipped" data-position="botton" data-delay="50" data-tooltip="La contraseña debe contener letras mayusculas, minusculas y numeros" required pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}" name="pwd1" onchange="form.pwd2.pattern = this.value;">
+                        <input type="password" id="password" class="validate tooltipped" data-position="botton" data-delay="50" data-tooltip="La contraseña debe contener letras mayusculas, minusculas y numeros" required pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}" name="pwd1" onchange="form.pwd2.pattern = this.value;">
                         <label for="password">Password</label>
                     </div>
                     <div class="input-field col s6">
@@ -60,19 +65,46 @@
                     </div>
                 </div>
                 <div class="row">
-                </div>
-                <div class="row">
                     <div class="input-field col s6">
                         <label for="birthdate" class="active">Birthdate</label>
-                        <input type="date" class="datepicker">
+                        <input id="birthday" type="date" class="datepicker">
                     </div>
                 </div>
-                <button class="btn waves-effect waves-light" type="submit" name="action">Submit
-                    <i class="material-icons right">send</i>
-                </button>
+                <div id='button-create'>
+                    <button class="btn waves-effect waves-light" type="submit" name="action">Submit
+                        <i class="material-icons right">send</i>
+                    </button>
+                </div>
             </fieldset>
-        </form>
+        </div>
     </div>
+    <!--//////////////////////////////////////////////////////////////////////////////////////-->
+    <script>
+    
+    var URL = "http://localhost:2000/client/"
+
+    $('#button-create').click(function() {
+
+        
+        
+        var data = {
+            user: $("#account").val(),
+            email: $("#email").val(),
+            name: $("#first_name").val() + ' ' + $("#last_name").val(),
+            birthday: $("#birthday").val(),
+            password: $("#password").val()
+        };
+        $.ajax({
+            dataType: "html",
+            url: URL,
+            data: data,
+            type: "POST",
+             success: function(result) {
+                console.log(result)
+            }
+        })
+    });
+    </script>
     <footer class="page-footer orange">
         <div class="container">
             <div class="row">
@@ -107,13 +139,16 @@
         </div>
     </footer>
     <!--  Scripts-->
-    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script src="js/materialize.js"></script>
-    <script src="js/init.js"></script>
+
     <script>
     $('.datepicker').pickadate({
+
         selectMonths: true, // Creates a dropdown to control month
-        selectYears: 15 // Creates a dropdown of 15 years to control year
+        selectYears: 120, // Creates a dropdown of 15 years to control year
+            // An integer (positive/negative) sets it relative to today.
+        min: false,
+        // `true` sets it to today. `false` removes any limits.
+        max: true
     });
     </script>
 </body>

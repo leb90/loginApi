@@ -192,22 +192,7 @@ router.delete("/client/:id", function(req, res) {
 
 ///////////////////////////////////////////
 
-var index = function(req, res, next) {
-    if (!req.isAuthenticated()) {
-        res.redirect('/signin');
-    } else {
 
-        var user = req.user;
-
-        if (user !== undefined) {
-            user = user.toJSON();
-        }
-        res.render('index', {
-            title: 'Home',
-            user: user
-        });
-    }
-};
 
 // sign in
 // GET
@@ -216,6 +201,7 @@ router.get('/signin', function(req, res, next) {
     res.render('signin.html', {
         title: 'Sign In'
     });
+
 });
 // sign in
 // POST
@@ -238,14 +224,14 @@ router.post('/signin', function(req, res, next) {
         },
         UserModel.getLogUser(userData, function(err, user, info) {
             if (err) {
-                return res.render('signin', {
+                 return res.send({
                     title: 'Sign In',
                     errorMessage: err.message
                 });
             }
 
             if (!user) {
-                return res.render('signin', {
+                return res.send({
                     title: 'Sign In',
                     errorMessage: info.message
                 });
@@ -259,8 +245,8 @@ router.post('/signin', function(req, res, next) {
                 id: token,
                 account_id: user[0].id
             }
-            UserModel.insertToken(tokenData, function(err, data) {
-
+            UserModel.insertToken(tokenData, function(err) {
+                
                 if (err) {
 
                     return res.send({

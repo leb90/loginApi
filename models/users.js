@@ -162,7 +162,6 @@ userModel.insertToken = function(userData, callback) {
     if (connection) {
         var sql = 'INSERT INTO db1.token SET id = :id, account_id = :account_id';
         connection.query(sql, userData, function(err, result) {
-            console.log(err)
 
             if (err) {
                 throw err;
