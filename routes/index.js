@@ -31,8 +31,8 @@ router.get("/client/update/:id", function(req, res) {
 
 
 router.get("/list", function(req, res) {
-    res.render("index.html", {
-        title: "Formulario para crear un nuevo recurso"
+    res.render("user.html", {
+        title: "Formulario para logear un usuario"
     });
 });
 
@@ -54,10 +54,19 @@ router.get("/delete", function(req, res) {
 });
 
 router.get("/client", function(req, res) {
-    console.log("tirando datos")
-    UserModel.getUsers(function(error, data) {
-        res.json(200, data);
-    });
+
+    var th = req.headers.authentication_token;
+
+    if (th) {
+        UserModel.getUserToken(function(error, data) {
+            res.json(200, data);
+        });
+    } else {
+
+        UserModel.getUsers(function(error, data) {
+            res.json(200, data);
+        });
+    }
 });
 
 
@@ -224,7 +233,7 @@ router.post('/signin', function(req, res, next) {
         },
         UserModel.getLogUser(userData, function(err, user, info) {
             if (err) {
-                 return res.send({
+                return res.send({
                     title: 'Sign In',
                     errorMessage: err.message
                 });
@@ -246,7 +255,7 @@ router.post('/signin', function(req, res, next) {
                 account_id: user[0].id
             }
             UserModel.insertToken(tokenData, function(err) {
-                
+
                 if (err) {
 
                     return res.send({

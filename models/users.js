@@ -172,6 +172,25 @@ userModel.insertToken = function(userData, callback) {
     }
 }
 
+userModel.getUserToken = function(userData, th,callback) {
+console.log(th.id)
+    var ob = {
+        token: th
+    }
+
+    if (connection) {
+         var sql = "SELECT * FROM db1.token  AS token LEFT JOIN db1.account AS account ON token.account_id = account.id WHERE token.id = :token ";
+        connection.query(sql,ob, function(err, result) {
+
+            if (err) {
+                throw err;
+            } else {
+                callback(err,result);
+            }
+        });
+    }
+}
+
 
 
 
