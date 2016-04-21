@@ -1,5 +1,6 @@
 var mysql = require('mysql');
 
+
 var connection = mysql.createConnection({
 
     host: 'localhost',
@@ -157,42 +158,61 @@ userModel.getLogUser = function(userData, callback) {
     });
 }
 
-userModel.insertToken = function(userData, callback) {
+userModel.insertToken = function(userToken, callback) {
 
     if (connection) {
         var sql = 'INSERT INTO db1.token SET id = :id, account_id = :account_id';
+        connection.query(sql, userToken, function(err, result) {
+
+            if (err) {
+                throw err;
+            } else {
+                callback(err, result);
+            }
+        });
+    }
+}
+
+userModel.getUserToken = function(userData, callback) {
+
+    if (connection) {
+        var sql = "SELECT * FROM db1.token  AS token LEFT JOIN db1.account AS account ON token.account_id = account.id WHERE token.id = :token";
         connection.query(sql, userData, function(err, result) {
 
             if (err) {
                 throw err;
             } else {
-                callback(err,result);
+                callback(err, result);
             }
         });
     }
 }
 
-userModel.getUserToken = function(userData, th,callback) {
-console.log(th.id)
-    var ob = {
-        token: th
-    }
 
+
+userModel.deleteToken = function(userData, callback) {
     if (connection) {
-         var sql = "SELECT * FROM db1.token  AS token LEFT JOIN db1.account AS account ON token.account_id = account.id WHERE token.id = :token ";
-        connection.query(sql,ob, function(err, result) {
 
-            if (err) {
-                throw err;
+
+
+
+        var query = "DELETE FROM db1.token WHERE id = :token";
+        connection.query(query, userData, function(error, result) {
+            if (error) {
+                throw error;
             } else {
-                callback(err,result);
+                callback(null, {
+                    "msg": "deleted"
+                });
             }
         });
+    } else {
+        callback(null, {
+            "msg": "notExist"
+        });
     }
+
 }
-
-
-
 
 
 

@@ -31,7 +31,7 @@ router.get("/client/update/:id", function(req, res) {
 
 
 router.get("/list", function(req, res) {
-    res.render("user.html", {
+    res.render("index.html", {
         title: "Formulario para logear un usuario"
     });
 });
@@ -55,10 +55,13 @@ router.get("/delete", function(req, res) {
 
 router.get("/client", function(req, res) {
 
-    var th = req.headers.authentication_token;
+    var token = req.headers.authentification_token;
 
-    if (th) {
-        UserModel.getUserToken(function(error, data) {
+    if (token) {
+        UserModel.getUserToken({
+            token: token
+        }, function(error, data) {
+
             res.json(200, data);
         });
     } else {
@@ -198,6 +201,25 @@ router.delete("/client/:id", function(req, res) {
 
 });
 
+router.delete("/logOut", function(req, res) {
+
+    var token = req.headers.cookie;
+
+    if (token) {
+        UserModel.deleteToken({
+            token: token
+        }, function(error, data) {
+            if (data && data.msg === "deleted" || data.msg === "notExist") {
+                res.send(data);
+            } else {
+                res.json(500, {
+                    "msg": "Error"
+                });
+            }
+        });
+
+    }
+});
 
 ///////////////////////////////////////////
 
@@ -247,7 +269,7 @@ router.post('/signin', function(req, res, next) {
             }
 
 
-            var token = crypto.randomBytes(32).toString('hex');
+            var token = crypto.randomBytes(16).toString('hex');
 
             //arregla los datos que inserta
             var tokenData = {

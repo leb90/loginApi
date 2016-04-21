@@ -9,6 +9,8 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection" />
     <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection" />
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="js/materialize.min.js"></script>
 </head>
 
 <body>
@@ -23,14 +25,49 @@
             <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
         </div>
     </nav>
+    <div id="button-delete">
+        <button style="margin-top: 10px;" class="waves-effect waves-light btn "><i class="material-icons left">input</i>Salir</button>
+    </div>
     <!--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-    <h1>Hola usuario :</h1>
+    <div id="list">Cargando...</div>
+    <script>
+    var x = document.cookie;
+    if (x) {
+        $.ajaxSetup({
+            headers: {
+                'authentification_token': x
+            }
+        });
 
-<!--/////////////////////////////////////////////////////////////////////////////////// -->
-    <a class="waves-effect waves-light btn"><i class="material-icons left">input</i>Salir</a>
-    <div class="container" style= "margin-bottom: 200px;">
 
+        $.getJSON('http://localhost:2000/client')
+            .done(function(data) {
+                var wel = '<h5 style= "text-align: center";> Welcome!</h5><h5 style= "text-align: center; color: green"> ' + data[0].user + '</h5>'
+                $("#list").html(wel);
+            });
+    } else {
+        alert("Necesita logearse con su usuario para acceder");
+        window.location.href = 'http://localhost:2000/signin';
+    }
 
+    $('#button-delete').click(function() {
+
+                
+
+                $.ajax({
+                    dataType: "json",
+                    url: 'http://localhost:2000/logOut',
+                    type: 'DELETE',
+                    success: function(data) {
+                        document.cookie = " ";
+                        window.location.href = 'http://localhost:2000/signin';
+                    }
+                })
+
+            })
+    </script>
+    <!--/////////////////////////////////////////////////////////////////////////////////// -->
+    <div class="container" style="margin-bottom: 400px;">
     </div>
     <footer class="page-footer orange">
         <div class="container">
