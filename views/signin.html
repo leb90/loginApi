@@ -53,7 +53,7 @@
                         <a class="waves-effect waves-light btn" type="submit"><i class="material-icons left">done</i>Login</a>
                     </div>
                     <br>
-                    <a href="/signup" class="waves-effect waves-light btn"><i class="material-icons left">play_for_work</i>Registrarse</a>
+                    <a href="/create" class="waves-effect waves-light btn"><i class="material-icons left">play_for_work</i>Registrarse</a>
                     <a class="waves-effect waves-teal btn-flat">Olvidó su contraseña?</a>
                 </div>
             </div>
@@ -63,6 +63,11 @@
     if (typeof(errorMessage) !== 'undefined') {
         errorMessage
     }
+
+    function setCookie(name, attr) {
+        document.cookie = name + "=" + attr;
+    }
+
 
     var URL = "http://localhost:2000/signin"
 
@@ -80,9 +85,10 @@
             data: data,
             type: "POST",
             success: function(data) {
-
-                document.cookie = data.token
-                window.location.href = 'http://localhost:2000/client';
+                
+                setCookie("Token",data.token);
+                //document.cookie = data.token
+                window.location.href = 'http://localhost:2000/list';
 
             },
             error: function() {

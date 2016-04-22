@@ -221,6 +221,27 @@ router.delete("/logOut", function(req, res) {
     }
 });
 
+
+router.get("/activate/?", function(req, res) {
+
+    var userData = {
+        status_id: req.param('status_id')
+    };
+    var hash = crypto.createHash('md5').update(userData.password).digest('hex');
+    console.log(hash);
+    userData.password = hash;
+
+    UserModel.updateUser(userData, function(error, data) {
+
+        if (data && data.msg) {
+            res.send(data);
+        } else {
+            res.json(500, {
+                "msg": "Error"
+            });
+        }
+    });
+});
 ///////////////////////////////////////////
 
 

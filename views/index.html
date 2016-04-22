@@ -31,7 +31,18 @@
     <!--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
     <div id="list">Cargando...</div>
     <script>
-    var x = document.cookie;
+    function getCookie(name) {
+        var value = "; " + document.cookie;
+        var parts = value.split("; " + name + "=");
+        if (parts.length == 2) return parts.pop().split(";").shift();
+    }
+
+    function deleteCookie(name) {
+        document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    }
+
+
+    var x = getCookie("Token");
     if (x) {
         $.ajaxSetup({
             headers: {
@@ -52,19 +63,19 @@
 
     $('#button-delete').click(function() {
 
-                
 
-                $.ajax({
-                    dataType: "json",
-                    url: 'http://localhost:2000/logOut',
-                    type: 'DELETE',
-                    success: function(data) {
-                        document.cookie = " ";
-                        window.location.href = 'http://localhost:2000/signin';
-                    }
-                })
 
-            })
+        $.ajax({
+            dataType: "json",
+            url: 'http://localhost:2000/logOut',
+            type: 'DELETE',
+            success: function(data) {
+                deleteCookie("Token");
+                window.location.href = 'http://localhost:2000/signin';
+            }
+        })
+
+    })
     </script>
     <!--/////////////////////////////////////////////////////////////////////////////////// -->
     <div class="container" style="margin-bottom: 400px;">

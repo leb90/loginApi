@@ -214,6 +214,35 @@ userModel.deleteToken = function(userData, callback) {
 
 }
 
+userModel.updateStatusUser = function(userData, callback) {
+
+
+
+    if (connection) {
+
+
+
+        var ob = {
+            status_id: (userData.status_id),
+
+        };
+
+        var sql = "UPDATE db1.account SET status_id = :status_id WHERE id = :id";
+
+        connection.query(sql, ob, function(error, data) {
+
+            if (error) {
+                throw error;
+            } else {
+                callback(null, {
+                    "msg": "success"
+                });
+            }
+        });
+
+    }
+
+}
 
 
 
