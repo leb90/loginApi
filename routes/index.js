@@ -98,11 +98,15 @@ router.get("/client/:id", function(req, res) {
 
 
 router.post("/client", function(req, res) {
+
+    var authentification_code = crypto.randomBytes(16).toString('hex');
+
+
     var transporter = nodemailer.createTransport({
         service: 'Gmail',
         auth: {
             user: 'leam.90@gmail.com',
-            pass: ''
+            pass: '35410287talizorah'
         }
 
     });
@@ -112,7 +116,7 @@ router.post("/client", function(req, res) {
         to: 'leam.90@gmail.com',
         subject: 'Website Submission',
         text: 'you created a new user',
-        html: '<p>new user created!...</p>'
+        html: '<p>new user created!... pleace activate in this link <a href=http://localhost:2000/activate?hash='+ authentification_code +' >Activation</a></p>'  
 
     }
 
@@ -122,7 +126,7 @@ router.post("/client", function(req, res) {
             res.redirect('/');
         } else {
             console.log('messege sent:' + info.response);
-            res.redirect('/');
+            //       res.redirect('/');
         }
     });
 
@@ -147,14 +151,31 @@ router.post("/client", function(req, res) {
 
     UserModel.insertUser(userData, function(error, data) {
 
-        if (data && data.insertId) {
 
-            res.redirect("/client/" + data.insertId);
-        } else {
-            res.json(500, {
-                "msg": "Error"
-            });
+
+        
+
+        //arregla los datos que inserta
+        var tokenData = {
+            id: authentification_code,
+            account_id: data.insertId
         }
+        UserModel.insertVerificationCode(tokenData, function(err) {
+
+            if (err) {
+
+                return res.send({
+                    title: 'Sign In',
+                    errorMessage: err.message
+                });
+            } else {
+
+                res.send({
+                    msj: 'uepa',
+                    validation_code: authentification_code
+                });
+            }
+        });
     });
 });
 
@@ -222,25 +243,38 @@ router.delete("/logOut", function(req, res) {
 });
 
 
-router.get("/activate/?", function(req, res) {
+router.get("/activate", function(req, res) {
 
-    var userData = {
-        status_id: req.param('status_id')
-    };
-    var hash = crypto.createHash('md5').update(userData.password).digest('hex');
-    console.log(hash);
-    userData.password = hash;
 
-    UserModel.updateUser(userData, function(error, data) {
+    var token = req.query.hash
 
-        if (data && data.msg) {
-            res.send(data);
-        } else {
-            res.json(500, {
-                "msg": "Error"
-            });
-        }
+    UserModel.getVerigicationCode({
+        token: token
+    }, function(error, data) {
+
+        
+
+        
+        var userData = {
+            id: data[0].id,
+            status_id: "2"
+        };
+
+        /////////////////////////////////////////////////////////////
+        UserModel.updateStatusUser(userData, function(error, data) {
+
+            if (data && data.msg) {
+                res.send(data);
+                res.redirect('/signin');
+            } else {
+                res.json(500, {
+                    "msg": "Error"
+                });
+            }
+        });
+
     });
+
 });
 ///////////////////////////////////////////
 

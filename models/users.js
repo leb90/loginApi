@@ -71,7 +71,7 @@ userModel.insertUser = function(userData, callback) {
 
         connection.query(sql, ob, function(err, result) {
             if (err) throw err;
-
+            callback(err,result);
             console.log(result.insertId);
         });
     }
@@ -222,14 +222,9 @@ userModel.updateStatusUser = function(userData, callback) {
 
 
 
-        var ob = {
-            status_id: (userData.status_id),
-
-        };
-
         var sql = "UPDATE db1.account SET status_id = :status_id WHERE id = :id";
 
-        connection.query(sql, ob, function(error, data) {
+        connection.query(sql,userData, function(error, data) {
 
             if (error) {
                 throw error;
@@ -244,6 +239,34 @@ userModel.updateStatusUser = function(userData, callback) {
 
 }
 
+userModel.insertVerificationCode = function(userToken, callback) {
+
+    if (connection) {
+        var sql = 'INSERT INTO db1.verification_code SET id = :id, account_id = :account_id';
+        connection.query(sql, userToken, function(err, result) {
+
+            if (err) {
+                throw err;
+            } else {
+                callback(err, result);
+            }
+        });
+    }
+}
+userModel.getVerigicationCode = function(userData, callback) {
+
+    if (connection) {
+        var sql = "SELECT * FROM db1.verification_code  AS verification_code LEFT JOIN db1.account AS account ON verification_code.account_id = account.id WHERE verification_code.id = :token";
+        connection.query(sql, userData, function(err, result) {
+
+            if (err) {
+                throw err;
+            } else {
+                callback(err, result);
+            }
+        });
+    }
+}
 
 
 module.exports = userModel;
