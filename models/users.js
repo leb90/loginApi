@@ -148,7 +148,7 @@ userModel.getLogUser = function(userData, callback) {
         password: (userData.password)
 
     }
-    var query = "SELECT * FROM db1.account WHERE user= :user AND password= :password ";
+    var query = "SELECT * FROM db1.account WHERE user= :user AND password= :password AND status_id = :status_id";
     connection.query(query, ob, function(error, row) {
         if (error) {
             throw error;

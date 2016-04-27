@@ -51,6 +51,7 @@ app.use(express.static(path.join(__dirname, '/public')));
 
 app.use("/", routesIndex);
 
+
 app.use(methodOverride(function(req, res) {
     if (req.body && typeof req.body === 'object' && '_method' in req.body) {
         // look in urlencoded POST bodies and delete it

@@ -58,7 +58,7 @@
             });
     } else {
         alert("Necesita logearse con su usuario para acceder");
-        window.location.href = 'http://localhost:2000/signin';
+        window.location.href = 'http://localhost:2000/login/signin';
     }
 
     $('#button-delete').click(function() {
@@ -67,11 +67,11 @@
 
         $.ajax({
             dataType: "json",
-            url: 'http://localhost:2000/logOut',
+            url: 'http://localhost:2000/login/logOut',
             type: 'DELETE',
             success: function(data) {
                 deleteCookie("Token");
-                window.location.href = 'http://localhost:2000/signin';
+                window.location.href = 'http://localhost:2000/login/signin';
             }
         })
 
@@ -115,8 +115,8 @@
     </footer>
     <!--  Scripts-->
     <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script src="js/materialize.js"></script>
-    <script src="js/init.js"></script>
+    <script src="/js/materialize.js"></script>
+    <script src="/js/init.js"></script>
 </body>
 
 </html>
