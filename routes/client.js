@@ -3,7 +3,7 @@ var crypto = require('crypto');
 var express = require('express');
 var router = express.Router();
 var nodemailer = require('nodemailer');
-var passport = require('passport');	
+var passport = require('passport');
 var client = require('./client');
 var login = require('./login');
 
@@ -128,10 +128,6 @@ router.post("/", function(req, res) {
     userData.password = crypto.createHash('md5').update(userData.password).digest('hex');
 
     UserModel.insertUser(userData, function(error, data) {
-
-
-
-
 
         //arregla los datos que inserta
         var tokenData = {

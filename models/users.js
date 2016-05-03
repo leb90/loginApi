@@ -71,7 +71,7 @@ userModel.insertUser = function(userData, callback) {
 
         connection.query(sql, ob, function(err, result) {
             if (err) throw err;
-            callback(err,result);
+            callback(err, result);
             console.log(result.insertId);
         });
     }
@@ -148,7 +148,7 @@ userModel.getLogUser = function(userData, callback) {
         password: (userData.password)
 
     }
-    var query = "SELECT * FROM db1.account WHERE user= :user AND password= :password AND status_id = :status_id";
+    var query = "SELECT * FROM db1.account WHERE user= :user AND password= :password";
     connection.query(query, ob, function(error, row) {
         if (error) {
             throw error;
@@ -224,7 +224,7 @@ userModel.updateStatusUser = function(userData, callback) {
 
         var sql = "UPDATE db1.account SET status_id = :status_id WHERE id = :id";
 
-        connection.query(sql,userData, function(error, data) {
+        connection.query(sql, userData, function(error, data) {
 
             if (error) {
                 throw error;
@@ -234,9 +234,7 @@ userModel.updateStatusUser = function(userData, callback) {
                 });
             }
         });
-
     }
-
 }
 
 userModel.insertVerificationCode = function(userToken, callback) {
@@ -266,6 +264,55 @@ userModel.getVerigicationCode = function(userData, callback) {
             }
         });
     }
+}
+
+
+userModel.updatePasswordUser = function(userData, callback) {
+
+
+
+    if (connection) {
+
+
+
+        var ob = {
+            password: (userData.password),
+            id: (userData.id)
+
+        };
+
+        var sql = "UPDATE db1.account SET password = :password WHERE id = :id";
+
+        connection.query(sql, ob, function(error, data) {
+
+            if (error) {
+                throw error;
+            } else {
+             callback(null, {
+                    "msg": "success"
+                });
+            }
+        });
+
+    }
+
+}
+
+
+userModel.getEmailUser = function(userData, callback) {
+    var ob = {
+
+        email: (userData.email)
+
+    }
+    var query = "SELECT * FROM db1.account WHERE email= :email";
+    connection.query(query, ob, function(error, row) {
+        if (error) {
+            throw error;
+        } else {
+            callback(null, row);
+        }
+    });
 }
 
 
