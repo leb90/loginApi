@@ -7,11 +7,23 @@
     <title>Starter Template - Materialize</title>
     <!-- CSS  -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection" />
-    <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection" />
+    <link href="/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection" />
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script type="text/javascript" src="js/materialize.min.js"></script>
+    <script src="/js/materialize.js"></script>
 </head>
+<style>
+
+html,body{
+    width: 100%;
+    height: 100%;
+}
+
+.table-style-center table{
+    display: flex;
+    justify-content: center;
+}
+</style>
 
 <body>
     <nav class="light-blue lighten-1" role="navigation">
@@ -26,11 +38,31 @@
         </div>
     </nav>
     <div id="button-delete">
-        <button style="margin-top: 10px;" class="waves-effect waves-light btn "><i class="material-icons left">input</i>Salir</button>
+        <button style="margin-top: 10px;" class="waves-effect waves-light btn "><i class="material-icons left">input</i>Exit</button>
+    </div>
+    <div id="button-message">
+        <a style="margin-top: 10px;" class='dropdown-button btn' data-beloworigin="true" data-activates='dropdown1'><i class="material-icons left">message</i>Message</a>
+        <ul id='dropdown1' class='dropdown-content'>
+            <li><a id="newmess-btn">New Message</a></li>
+            <li><a id="youmess-btn" onclick="listMess()">You Messege</a></li>
+        </ul>
+    </div>
+    <div id="newMess" style="display: none">
+        <fieldset>
+            <legend>New Message:</legend>
+            <div>
+                <label>Menssage:</label>
+                <input type="text" class="creteMessage" />
+            </div>
+            <div id="button-create">
+                <button class="waves-effect waves-light btn ">Crear Usuarios</button>
+            </div>
+        </fieldset>
     </div>
     <!--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
     <div id="list">Cargando...</div>
     <script>
+
     function getCookie(name) {
         var value = "; " + document.cookie;
         var parts = value.split("; " + name + "=");
@@ -76,7 +108,50 @@
         })
 
     })
+    $("#newmess-btn").click(function() {
+        $("#newMess").show("slow", function() {
+
+        });
+    });
+
+
+    $('#button-create').click(function() {
+        var data = {
+            message: $(".creteMessage").val(),
+
+        };
+        $.ajax({
+            dataType: "html",
+            url: "http://localhost:2000/login/message",
+            data: data,
+            type: "POST",
+            success: function(data) {
+
+            }
+        })
+    });
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    function listMess() {
+        console.log("llama la funcion")
+        var lista = '';
+        $.getJSON('http://localhost:2000/login/message')
+            .done(function(result) {
+                lista += '<table class="bordered"><tr><td>Menssage</td></tr>';
+                for (var i = 0; i < result.length; i++) {
+                    lista += '<tr><td>' + result[i].message + '</td></tr>';
+                }
+                lista += '</table>';
+                $("#list2").html(lista);
+            });
+    }
+    $(document).ready(function() {
+        listMess();
+    });
     </script>
+    <div id="list2" class="table-style-center" >Cargando...</div>
     <!--/////////////////////////////////////////////////////////////////////////////////// -->
     <div class="container" style="margin-bottom: 400px;">
     </div>
@@ -114,9 +189,6 @@
         </div>
     </footer>
     <!--  Scripts-->
-    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script src="/js/materialize.js"></script>
-    <script src="/js/init.js"></script>
 </body>
 
 </html>

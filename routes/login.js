@@ -7,6 +7,7 @@ var passport = require('passport');
 var client = require('./client');
 var login = require('./login');
 
+
 router.delete("/logOut", function(req, res) {
 
     var token = req.headers.cookie;
@@ -167,16 +168,17 @@ router.put("/recoverpasswd", function(req, res) {
 
 
         /////////////////////////////////////////////////////////////
-        UserModel.updatePasswordUser(userData, function(error, result) {
-            console.log(result)
-            if (!result) {
-                return res.json(500, {
+        UserModel.updatePasswordUser(userData, function(error, data) {
+            if (data && data.msg) {
+                res.send(data);
+
+            } else {
+                res.json(500, {
                     "msg": "Error"
                 });
-
             }
 
-            
+
         });
     });
 });
@@ -223,7 +225,7 @@ router.post('/recover', function(req, res, next) {
             to: 'leam.90@gmail.com',
             subject: 'Website Submission',
             text: 'you created a new user',
-            html: '<p>new user created!... pleace activate in this link <a href=http://localhost:2000/login/recoverpasswd?hash=' + authentification_code + ' >Activation</a></p>'
+            html: '<p>If you made a change password request please enter this link <a href=http://localhost:2000/login/recoverpasswd?hash=' + authentification_code + ' >Change Password</a></p>'
 
         }
 
@@ -260,10 +262,63 @@ router.post('/recover', function(req, res, next) {
                 });
             }
         });
-
-
     })
 });
 
+router.get("/message", function(req, res) {
+
+    var token = req.headers.authentification_token;
+
+    UserModel.getUserToken({
+        token: token
+    }, function(error, data) {
+
+
+        var userData = {
+            id: data[0].id
+        };
+
+
+        UserModel.getMessage(userData, function(error, user) {
+            if (error) {
+                return res.json(500, {
+                    "msg": "Error"
+                });
+            }
+            if (user) {
+                return res.json(user);
+            }
+            ///
+
+        });
+    });
+})
+
+router.post("/message", function(req, res) {
+
+    var token = req.headers.authentification_token;
+
+    UserModel.getUserToken({
+        token: token
+    }, function(error, data) {
+
+
+        var userData = {
+            message: req.body.message,
+            account_id: data[0].id
+        };
+
+        UserModel.insertMessage(userData, function(error, data) {
+
+            if (data && data.insertId) {
+                res.send(data);
+            } else {
+                res.json(500, {
+                    "msg": "Error"
+                });
+            }
+        });
+    });
+});
 
 module.exports = router

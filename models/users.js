@@ -288,7 +288,7 @@ userModel.updatePasswordUser = function(userData, callback) {
             if (error) {
                 throw error;
             } else {
-             callback(null, {
+                callback(null, {
                     "msg": "success"
                 });
             }
@@ -313,6 +313,47 @@ userModel.getEmailUser = function(userData, callback) {
             callback(null, row);
         }
     });
+}
+
+
+userModel.insertMessage = function(userData, callback) {
+
+    if (connection) {
+        var ob = {
+            account_id: (userData.account_id),
+            message: (userData.message)
+        };
+
+        var sql = 'INSERT INTO db1.message SET message = :message, account_id = :account_id';
+
+
+        connection.query(sql, ob, function(err, result) {
+            if (err) throw err;
+            callback(err, result);
+            console.log(result.insertId);
+        });
+    }
+}
+
+
+userModel.getMessage = function(userData, callback) {
+
+
+    var ob = {
+        id: (userData.id)
+    }
+
+    if (connection) {
+        var sql = "SELECT * FROM db1.message  AS message LEFT JOIN db1.account AS account ON message.account_id = account.id WHERE db1.account.id = :id";
+        connection.query(sql, ob, function(error, row) {
+
+            if (error) {
+                throw error;
+            } else {
+                callback(error, row);
+            }
+        });
+    }
 }
 
 

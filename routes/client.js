@@ -7,6 +7,7 @@ var passport = require('passport');
 var client = require('./client');
 var login = require('./login');
 
+
 router.get("/update/:id", function(req, res) {
     var id = req.params.id;
 
@@ -94,7 +95,7 @@ router.post("/", function(req, res) {
         to: 'leam.90@gmail.com',
         subject: 'Website Submission',
         text: 'you created a new user',
-        html: '<p>new user created!... pleace activate in this link <a href=http://localhost:2000/login/activate?hash=' + authentification_code + ' >Activation</a></p>'
+        html: '<p>New user created! pleace activate in this link <a href=http://localhost:2000/login/activate?hash=' + authentification_code + ' >Activation</a></p>'
 
     }
 
@@ -195,5 +196,8 @@ router.delete("/:id", function(req, res) {
     });
 
 });
+
+
+
 
 module.exports = router
