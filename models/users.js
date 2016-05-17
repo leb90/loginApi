@@ -335,6 +335,25 @@ userModel.insertMessage = function(userData, callback) {
     }
 }
 
+userModel.insertResMessage = function(userData, callback) {
+
+    if (connection) {
+        var ob = {
+            account_id: (userData.account_id),
+            message: (userData.message),
+            parent_id: (userData.parent_id)
+        };
+
+        var sql = 'INSERT INTO db1.message SET message = :message, account_id = :account_id, parent_id = :parent_id';
+
+
+        connection.query(sql, ob, function(err, result) {
+            if (err) throw err;
+            callback(err, result);
+            console.log(result.insertId);
+        });
+    }
+}
 
 userModel.getMessage = function(userData, callback) {
 
@@ -356,5 +375,22 @@ userModel.getMessage = function(userData, callback) {
     }
 }
 
+
+userModel.getTree = function(callback) {
+
+
+    if (connection) {
+        connection.query('SELECT db1.message.id AS id, db1.account.id AS account_id, db1.message.message, db1.message.created_at, db1.message.parent_id, db1.account.user FROM db1.message LEFT JOIN db1.account ON message.account_id = account.id ORDER BY message.created_at', 
+            function(error, rows) {
+
+
+            if (error) {
+                throw error;
+            } else {
+                callback(null, rows);
+            }
+        });
+    }
+}
 
 module.exports = userModel;

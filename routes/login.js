@@ -321,4 +321,53 @@ router.post("/message", function(req, res) {
     });
 });
 
+router.post("/resmessage", function(req, res) {
+
+    var token = req.headers.authentification_token;
+
+    UserModel.getUserToken({
+        token: token
+    }, function(error, data) {
+
+
+
+        var userData = {
+            message: req.body.message,
+            account_id: data[0].id,
+            parent_id: req.body.parent_id
+        };
+
+        UserModel.insertResMessage(userData, function(error, data) {
+
+            if (data && data.insertId) {
+                res.send(data);
+            } else {
+                res.json(500, {
+                    "msg": "Error"
+                });
+            }
+        });
+
+    });
+});
+
+router.get("/treecomment", function(req, res) {
+    UserModel.getTree(function(error, data) {
+
+
+
+
+
+        if (error) {
+            return res.json(500, {
+                "msg": "Error"
+            });
+        }
+        if (data) {
+            return res.json(data);
+        }
+
+    })
+})
+
 module.exports = router
